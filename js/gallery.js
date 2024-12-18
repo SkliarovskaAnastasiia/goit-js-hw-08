@@ -46,18 +46,16 @@ const images = [
   },
 ];
 
-const createCardEl = image => {
-  return `  <li class="gallery-item">
-    <a class="gallery-link" href="${image.original}">
+const createCardEl = ({ preview, original, description }) => `  <li class="gallery-item">
+    <a class="gallery-link" href="${original}">
       <img
         class="gallery-image"
-        src="${image.preview}"
-        data-source="${image.original}"
-        alt="${image.description}"
+        src="${preview}"
+        data-source="${original}"
+        alt="${description}"
       />
     </a>
   </li>`;
-};
 
 const galleryMarkup = images.map(el => createCardEl(el)).join('');
 
@@ -68,16 +66,14 @@ galleryListEl.insertAdjacentHTML('beforeend', galleryMarkup);
 galleryListEl.addEventListener('click', event => {
   event.preventDefault();
 
-  if (event.target === event.currentTarget) {
-    return;
-  }
+  if (event.target.tagName === 'IMG') {
+    const imageOriginalSrc = event.target.dataset.source;
 
-  const imageOriginalSrc = event.target.dataset.source;
+    const imageInfo = images.find(el => el.original === imageOriginalSrc);
 
-  const imageInfo = images.find(el => el.original === imageOriginalSrc);
-
-  const instance = basicLightbox.create(`<img src="${imageOriginalSrc}" width="1112" height="640">
+    const instance = basicLightbox.create(`<img src="${imageOriginalSrc}" width="1112" height="640">
     <p class="image-dscr">${imageInfo.description}</p>`);
 
-  instance.show();
+    instance.show();
+  }
 });
